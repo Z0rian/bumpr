@@ -1,13 +1,63 @@
-# -*- coding: utf-8 -*-
 """
-Created on Fri Mar 14 11:49:40 2025
+Bumpr Music Service Project
+Authors: Alex, Josh, and Zorian
 
-@author: Josh
 """
 
 import pygame
 
 pygame.mixer.init()
+
+#make Artist class
+class Artist:
+    def __init__(self, artistName):
+        self.artistName = artistName
+    
+    def getArtistName(self):
+        print("Artist name: " + self.artistName)
+        
+#make Genre class
+class Genre:
+    def __init__(self, genreName):
+        self.genreName = genreName
+    
+    def getGenreName(self):
+        print("Genre name: " + self.genreName)
+        
+#=========================================================================================        
+#initialize a few preset artists and genres
+rock = Genre("Rock")
+pop = Genre("Pop")
+country = Genre("Country")
+
+acdc = Artist("AC DC")
+
+
+
+#make Song class
+class Song:
+    def __init__(self, title, Artist, Genre):
+        self.title = title
+        self.artist = artist
+        self.genre = genre
+    
+    def songInfo(self):
+        print("Title: " + self.title)
+        print("Artist: " + self.artist)
+        print("Genre: " + self.genre)
+    
+    def start(self):
+        pygame.mixer.music.load(self.title)
+        pygame.mixer.music.play()
+        
+    def play():
+        pygame.mixer.music.play()
+    
+    def pause():
+        pygame.mixer.music.pause()
+
+
+
 
 while True:
     print("1: Play Back in Black")
@@ -37,6 +87,12 @@ while True:
         pygame.mixer.music.pause()
     elif choice == 'b':
         pygame.mixer.music.unpause()
+
+def newSong():
+    newSong = input.print("Song Creation Wizard: Enter song name: ")
+    newArtist = input.print("Enter artist name: ")
+    newGenre = input.print("Enter genre name: ")
+
 
 # Keep the program running while audio plays
 while pygame.mixer.music.get_busy():
