@@ -5,58 +5,36 @@ Authors: Alex, Josh, and Zorian
 """
 
 import pygame
+import pandas as pd
+import numpy as np
 
 pygame.mixer.init()
 
-#make Artist class
-class Artist:
-    def __init__(self, artistName):
-        self.artistName = artistName
+#make a dictionary
+mySongs = {
+    'song': ['BackInBlack', 'BohemianRhapsody', 'Imagine', 'StairwayToHeaven', 'HeyJude', 
+                 'SmellsLikeTeenSpirit', 'HotelCalifornia', 'LikeARollingStone', 'BillieJean', 'ShapeOfYou'],
+    'file': ['AC DC - Back In Black (Official 4K Video).mp3', 'bohemianrhapsody.mp3', 'imagine.mp3', 'stairwaytoheaven.mp3', 'heyjude.mp3',
+             'smellsliketeenspirit.mp3', 'hotelcalifornia.mp3', 'likearollingstone.mp3', 'billiejean.mp3', 'shapeofyou.mp3'],
+    'album': ['BackInBlack', 'ANightAtTheOpera', 'Imagine', 'LedZeppelinIV', 'Revolver', 
+              'Nevermind', 'HotelCalifornia', 'Highway61Revisited', 'Thriller', 'Divide'],
+   'length': [253, 355, 181, 482, 240, 
+               301, 390, 373, 294, 233],
+    'genre': ['Rock', 'Rock', 'Pop', 'Rock', 'Rock', 
+              'Grunge', 'Rock', 'Rock', 'Pop', 'Pop']
+}
     
-    def getArtistName(self):
-        print("Artist name: " + self.artistName)
-        
-#make Genre class
-class Genre:
-    def __init__(self, genreName):
-        self.genreName = genreName
-    
-    def getGenreName(self):
-        print("Genre name: " + self.genreName)
-        
-#=========================================================================================        
-#initialize a few preset artists and genres
-rock = Genre("Rock")
-pop = Genre("Pop")
-country = Genre("Country")
-
-acdc = Artist("AC DC")
 
 
 
-#make Song class
-class Song:
-    def __init__(self, title, Artist, Genre):
-        self.title = title
-        self.artist = artist
-        self.genre = genre
-    
-    def songInfo(self):
-        print("Title: " + self.title)
-        print("Artist: " + self.artist)
-        print("Genre: " + self.genre)
-    
-    def start(self):
-        pygame.mixer.music.load(self.title)
-        pygame.mixer.music.play()
-        
-    def play():
-        pygame.mixer.music.play()
-    
-    def pause():
-        pygame.mixer.music.pause()
+songdf = pd.DataFrame(mySongs)
 
 
+
+#print(songdf)
+#print(type(songdf[songdf['song'] == 'BackInBlack']['file']))
+
+#print((songdf[songdf['song'] == 'BackInBlack']['file']).split(" "), (1))
 
 
 while True:
@@ -69,7 +47,8 @@ while True:
     print("b: Play song")
     choice = input("Enter your choice")
     if choice == '1':
-        pygame.mixer.music.load("AC DC - Back In Black (Official 4K Video).mp3")
+        songIndex = int(input("Enter song index: "))
+        pygame.mixer.music.load(mySongs['file'][songIndex])
         pygame.mixer.music.play()
     elif choice == '2':
         pygame.mixer.music.load("AC DC - Thunderstruck (Official Video).mp3")
@@ -88,10 +67,6 @@ while True:
     elif choice == 'b':
         pygame.mixer.music.unpause()
 
-def newSong():
-    newSong = input.print("Song Creation Wizard: Enter song name: ")
-    newArtist = input.print("Enter artist name: ")
-    newGenre = input.print("Enter genre name: ")
 
 
 # Keep the program running while audio plays

@@ -1,0 +1,53 @@
+song,songName,fileName,artist,album,length,genre
+1,Smells Like Teen Spirit,SmellsLikeTeenSpirit.mp3,Nirvana,Nevermind,301,Grunge
+2,Billie Jean,BillieJean.mp3,Michael Jackson,Thriller,294,Pop
+3,Stairway to Heaven,StairwaytoHeaven.mp3,Led Zeppelin,Led Zeppelin IV,482,Rock
+4,Hotel California,HotelCalifornia.mp3,Eagles,Hotel California,391,Rock
+5,Bohemian Rhapsody,BohemianRhapsody.mp3,Queen,A Night at the Opera,354,Rock
+6,Imagine,Imagine.mp3,John Lennon,Imagine,183,Soft Rock
+7,Hey Jude,HeyJude.mp3,The Beatles,Hey Jude,431,Rock
+8,Like a Rolling Stone,LikeaRollingStone.mp3,Bob Dylan,Highway 61 Revisited,369,Folk Rock
+9,What's Going On,What'sGoingOn.mp3,Marvin Gaye,What's Going On,233,Soul
+10,Purple Haze,PurpleHaze.mp3,Jimi Hendrix,Are You Experienced,170,Psychedelic Rock
+11,Superstition,Superstition.mp3,Stevie Wonder,Talking Book,251,Funk
+12,Johnny B. Goode,JohnnyB.Goode.mp3,Chuck Berry,Chuck Berry Is on Top,160,Rock and Roll
+13,"No Woman, No Cry","NoWoman,NoCry.mp3",Bob Marley,Natty Dread,430,Reggae
+14,I Will Always Love You,IWillAlwaysLoveYou.mp3,Whitney Houston,The Bodyguard,273,Pop
+15,Thriller,Thriller.mp3,Michael Jackson,Thriller,358,Pop
+16,Sweet Child O' Mine,SweetChildO'Mine.mp3,Guns N' Roses,Appetite for Destruction,356,Rock
+17,Losing My Religion,LosingMyReligion.mp3,R.E.M.,Out of Time,269,Alternative Rock
+18,Wonderwall,Wonderwall.mp3,Oasis,(What's the Story) Morning Glory?,258,Britpop
+19,I Want to Hold Your Hand,IWanttoHoldYourHand.mp3,The Beatles,Meet the Beatles!,155,Rock
+20,Rolling in the Deep,RollingintheDeep.mp3,Adele,21,228,Pop
+21,Uptown Funk,UptownFunk.mp3,Mark Ronson ft. Bruno Mars,Uptown Special,270,Funk Pop
+22,Hallelujah,Hallelujah.mp3,Jeff Buckley,Grace,416,Folk Rock
+23,Creep,Creep.mp3,Radiohead,Pablo Honey,238,Alternative Rock
+24,Somebody to Love,SomebodytoLove.mp3,Queen,A Day at the Races,295,Rock
+25,Let It Be,LetItBe.mp3,The Beatles,Let It Be,243,Rock
+26,Take On Me,TakeOnMe.mp3,a-ha,Hunting High and Low,225,Synthpop
+27,Toxic,Toxic.mp3,Britney Spears,In the Zone,200,Pop
+28,Lose Yourself,LoseYourself.mp3,Eminem,8 Mile,326,Hip-Hop
+29,Shake It Off,ShakeItOff.mp3,Taylor Swift,1989,219,Pop
+30,Blinding Lights,BlindingLights.mp3,The Weeknd,After Hours,200,Synthwave
+31,Back in Black,BackinBlack.mp3,AC/DC,Back in Black,255,Rock
+32,We Will Rock You,WeWillRockYou.mp3,Queen,News of the World,122,Rock
+33,Riders on the Storm,RidersontheStorm.mp3,The Doors,L.A. Woman,442,Psychedelic Rock
+34,Born to Run,BorntoRun.mp3,Bruce Springsteen,Born to Run,270,Rock
+35,With or Without You,WithorWithoutYou.mp3,U2,The Joshua Tree,295,Rock
+36,Enter Sandman,EnterSandman.mp3,Metallica,Metallica,331,Heavy Metal
+37,Billie Eilish,BillieEilish.mp3,Bad Guy,"When We All Fall Asleep, Where Do We Go?",194,Pop
+38,Seven Nation Army,SevenNationArmy.mp3,The White Stripes,Elephant,231,Alternative Rock
+39,Smash Mouth,SmashMouth.mp3,All Star,Astro Lounge,195,Pop Rock
+40,I Wanna Dance with Somebody,IWannaDancewithSomebody.mp3,Whitney Houston,Whitney,285,Pop
+41,Radioactive,Radioactive.mp3,Imagine Dragons,Night Visions,186,Alternative Rock
+42,Shape of You,ShapeofYou.mp3,Ed Sheeran,Divide,233,Pop
+43,Happy,Happy.mp3,Pharrell Williams,G I R L,233,Pop
+44,Don't Stop Believin',Don'tStopBelievin'.mp3,Journey,Escape,251,Rock
+45,Hurt,Hurt.mp3,Johnny Cash,American IV: The Man Comes Around,227,Country
+46,Take Me to Church,TakeMetoChurch.mp3,Hozier,Hozier,241,Alternative Rock
+47,God's Plan,God'sPlan.mp3,Drake,Scorpion,198,Hip-Hop
+48,Old Town Road,OldTownRoad.mp3,Lil Nas X,7,157,Country Rap
+49,Dance Monkey,DanceMonkey.mp3,Tones and I,The Kids Are Coming,210,Electropop
+50,Rockstar,Rockstar.mp3,Post Malone,Beerbongs & Bentleys,218,Hip-Hop
+51,Thinking Out Loud,ThinkingOutLoud.mp3,Ed Sheeran,X,281,Pop
+52,Shake It Off,ShakeItOff.mp3,Taylor Swift,1989,219,Pop
