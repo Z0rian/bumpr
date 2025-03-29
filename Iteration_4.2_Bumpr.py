@@ -95,4 +95,9 @@ next_button.pack(side=tk.LEFT, padx=5)
 song_label = tk.Label(root, text="Select a song to play")
 song_label.pack(side=tk.TOP, pady=10)
 
+# Add Song Dialogue
+
+
+
+
 root.mainloop()

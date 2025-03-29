@@ -66,6 +66,13 @@ def search_song():
         if query in song_name.lower():
             song_list.insert(tk.END, song_name)
 
+def loadSong():
+    songSelector = tk.Toplevel(root)  # Create a new window instead of a new Tk instance
+    songSelector.title("Load Song")
+    songSelector.geometry("400x350")
+    #get all files in directory and check if they end in .mp3
+    #if so, add them to the DataFile
+
 # GUI Setup
 root = tk.Tk()
 root.title("Bumpr Music Player")
@@ -107,5 +114,10 @@ next_button.pack(side=tk.LEFT, padx=5)
 # Song Label
 song_label = tk.Label(root, text="Select a song to play")
 song_label.pack(side=tk.TOP, pady=10)
+
+# Add Songs
+load_song_button = tk.Button(root, text="Load Song", command=loadSong)
+load_song_button.pack(side=tk.TOP, pady=10)
+
 
 root.mainloop()

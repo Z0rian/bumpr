@@ -71,11 +71,26 @@ def search_song():
             song_list.insert(tk.END, song_name)
 
 def loadSong():
-    songSelector = tk.Toplevel(root)  # Create a new window instead of a new Tk instance
+    songSelector = tk.Toplevel(root)  
     songSelector.title("Load Song")
     songSelector.geometry("400x350")
-    #get all files in directory and check if they end in .mp3
-    #if so, add them to the DataFile
+
+    # Create a listbox to display found songs
+    song_listbox = Listbox(songSelector)
+    song_listbox.pack(fill=tk.BOTH, expand=True)
+
+    # Search recursively for .mp3 files in all subdirectories
+    music_files = []
+    for root_dir, _, files in os.walk('.'):  # Walk through all directories
+        for file in files:
+            if file.endswith('.mp3'):
+                full_path = os.path.join(root_dir, file)  # Get full file path
+                music_files.append(full_path)  # Store file path
+
+    # Add songs to the listbox
+    for song in music_files:
+        song_listbox.insert(tk.END, song)
+
 
 # GUI Setup
 root = tk.Tk()
