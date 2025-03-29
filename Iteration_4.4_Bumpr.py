@@ -4,8 +4,9 @@ Authors: Alex, Josh, and Zorian
 
 """
 
+import os
 import tkinter as tk
-from tkinter import Listbox, Scrollbar, Entry
+from tkinter import Listbox, Scrollbar, Entry, messagebox
 import pygame
 import pandas as pd
 
@@ -35,6 +36,9 @@ def play_song(index=None):
     if index is not None:
         current_song_index = index
     song_file = songdf['file'][current_song_index]
+    if not os.path.exists(song_file):
+        messagebox.showerror("File Not Found", f"Error: The file {song_file} does not exist.")
+        return
     pygame.mixer.music.load(song_file)
     pygame.mixer.music.play()
     song_label.config(text=f"Now Playing: {songdf['song'][current_song_index]}")
