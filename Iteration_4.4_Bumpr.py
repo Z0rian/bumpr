@@ -1,3 +1,4 @@
+
 """
 Bumpr Music Service Project
 Authors: Alex, Josh, and Zorian
@@ -17,8 +18,8 @@ pygame.mixer.init()
 mySongs = {
     'song': ['BackInBlack', 'BohemianRhapsody', 'Imagine', 'StairwayToHeaven', 'HeyJude', 
              'SmellsLikeTeenSpirit', 'HotelCalifornia', 'LikeARollingStone', 'BillieJean', 'ShapeOfYou'],
-    'file': ['Bumpr_music/backinblack.mp3', 'Bumpr_music/bohemianrhapsody.mp3', 'Bumpr_music/imagine.mp3', 'Bumpr_music/stairwaytoheaven.mp3', 'Bumpr_music/heyjude.mp3',
-             'Bumpr_music/smellsliketeenspirit.mp3', 'Bumpr_music/hotelcalifornia.mp3', 'Bumpr_music/likearollingstone.mp3', 'Bumpr_music/billiejean.mp3', 'Bumpr_music/shapeofyou.mp3'],
+    'file': ['backinblack.mp3', 'bohemianrhapsody.mp3', 'imagine.mp3', 'stairwaytoheaven.mp3', 'heyjude.mp3',
+             'smellsliketeenspirit.mp3', 'hotelcalifornia.mp3', 'likearollingstone.mp3', 'billiejean.mp3', 'shapeofyou.mp3'],
     'album': ['BackInBlack', 'ANightAtTheOpera', 'Imagine', 'LedZeppelinIV', 'Revolver', 
               'Nevermind', 'HotelCalifornia', 'Highway61Revisited', 'Thriller', 'Divide'],
     'artist': ['AC/DC', 'Queen', 'John Lennon', 'Led Zeppelin', 'The Beatles', 'Nirvana',
@@ -71,6 +72,7 @@ def search_song():
             song_list.insert(tk.END, song_name)
 
 def loadSong():
+    global songdf
     songSelector = tk.Toplevel(root)  
     songSelector.title("Load Song")
     songSelector.geometry("400x350")
@@ -78,6 +80,7 @@ def loadSong():
     # Create a listbox to display found songs
     song_listbox = Listbox(songSelector)
     song_listbox.pack(fill=tk.BOTH, expand=True)
+
 
     # Search recursively for .mp3 files in all subdirectories
     music_files = []
@@ -88,8 +91,21 @@ def loadSong():
                 music_files.append(full_path)  # Store file path
 
     # Add songs to the listbox
+    new_songs = []
     for song in music_files:
         song_listbox.insert(tk.END, song)
+        if song not in songdf['file'].values:
+            print(song)
+            new_songs.append({'song': os.path.splitext(os.path.basename(song))[0], 
+                              'file': song, 
+                              'album': '', 
+                              'artist': '', 
+                              'length': '', 
+                              'genre': ''})
+
+    if new_songs:
+        new_songs_df = pd.DataFrame(new_songs)
+        songdf = pd.concat([songdf, new_songs_df], ignore_index=True)
 
 
 # GUI Setup

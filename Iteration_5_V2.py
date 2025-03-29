@@ -1,6 +1,13 @@
+
+"""
+Bumpr Music Service Project
+Authors: Alex, Josh, and Zorian
+
+"""
+
 import os
 import tkinter as tk
-from tkinter import ttk, Entry, messagebox
+from tkinter import Listbox, Scrollbar, Entry, messagebox
 import pygame
 import pandas as pd
 
@@ -9,11 +16,11 @@ pygame.mixer.init()
 
 # Song data
 mySongs = {
-    'song': ['BackInBlack', 'BohemianRhapsody', 'Imagine', 'StairwayToHeaven', 'HeyJude',
+    'song': ['BackInBlack', 'BohemianRhapsody', 'Imagine', 'StairwayToHeaven', 'HeyJude', 
              'SmellsLikeTeenSpirit', 'HotelCalifornia', 'LikeARollingStone', 'BillieJean', 'ShapeOfYou'],
     'file': ['backinblack.mp3', 'bohemianrhapsody.mp3', 'imagine.mp3', 'stairwaytoheaven.mp3', 'heyjude.mp3',
              'smellsliketeenspirit.mp3', 'hotelcalifornia.mp3', 'likearollingstone.mp3', 'billiejean.mp3', 'shapeofyou.mp3'],
-    'album': ['BackInBlack', 'ANightAtTheOpera', 'Imagine', 'LedZeppelinIV', 'Revolver',
+    'album': ['BackInBlack', 'ANightAtTheOpera', 'Imagine', 'LedZeppelinIV', 'Revolver', 
               'Nevermind', 'HotelCalifornia', 'Highway61Revisited', 'Thriller', 'Divide'],
     'artist': ['AC/DC', 'Queen', 'John Lennon', 'Led Zeppelin', 'The Beatles', 'Nirvana',
                'The Eagles', 'Bob Dylan', 'Michael Jackson', 'Ed Sheeran'],
@@ -24,8 +31,7 @@ mySongs = {
 songdf = pd.DataFrame(mySongs)
 current_song_index = 0
 
-# --- Functions ---
-
+# Function to load and play a song
 def play_song(index=None):
     global current_song_index
     if index is not None:
@@ -38,84 +44,96 @@ def play_song(index=None):
     pygame.mixer.music.play()
     song_label.config(text=f"Now Playing: {songdf['song'][current_song_index]}")
 
+# Function to pause or unpause
 def toggle_play_pause():
     if pygame.mixer.music.get_busy():
         pygame.mixer.music.pause()
     else:
         pygame.mixer.music.unpause()
 
+# Function to play next song
 def next_song():
     global current_song_index
     current_song_index = (current_song_index + 1) % len(songdf)
     play_song()
 
+# Function to play previous song
 def prev_song():
     global current_song_index
     current_song_index = (current_song_index - 1) % len(songdf)
     play_song()
 
-def search_song(*args):
+# Function to filter songs based on search query
+def search_song():
     query = search_entry.get().lower()
-    tree.delete(*tree.get_children())
-    filtered_df = songdf[songdf['song'].str.lower().str.contains(query)] if query else songdf
-    populate_table(filtered_df)
-
-def on_song_select(event):
-    selected = tree.focus()
-    if selected:
-        index = int(tree.item(selected)['text'])
-        play_song(index)
+    song_list.delete(0, tk.END)
+    for i, song_name in enumerate(songdf['song']):
+        if query in song_name.lower():
+            song_list.insert(tk.END, song_name)
 
 def loadSong():
-    songSelector = tk.Toplevel(root)
+    global songdf
+    songSelector = tk.Toplevel(root)  
     songSelector.title("Load Song")
     songSelector.geometry("400x350")
 
-    song_listbox = tk.Listbox(songSelector)
+    # Create a listbox to display found songs
+    song_listbox = Listbox(songSelector)
     song_listbox.pack(fill=tk.BOTH, expand=True)
 
+
+    # Search recursively for .mp3 files in all subdirectories
     music_files = []
-    for root_dir, _, files in os.walk('.'):
+    for root_dir, _, files in os.walk('.'):  # Walk through all directories
         for file in files:
             if file.endswith('.mp3'):
-                full_path = os.path.join(root_dir, file)
-                music_files.append(full_path)
+                full_path = os.path.join(root_dir, file)  # Get full file path
+                music_files.append(full_path)  # Store file path
 
+    # Add songs to the listbox
+    new_songs = []
     for song in music_files:
         song_listbox.insert(tk.END, song)
+        if song not in songdf['file'].values:
+            print(song)
+            new_songs.append({'song': os.path.splitext(os.path.basename(song))[0], 
+                              'file': song, 
+                              'album': '', 
+                              'artist': '', 
+                              'length': '', 
+                              'genre': ''})
 
-def populate_table(data):
-    for i, row in data.iterrows():
-        tree.insert('', 'end', text=str(i), values=list(row))
+    if new_songs:
+        new_songs_df = pd.DataFrame(new_songs)
+        songdf = pd.concat([songdf, new_songs_df], ignore_index=True)
 
-# --- GUI Setup ---
+
+# GUI Setup
 root = tk.Tk()
 root.title("Bumpr Music Player")
-root.geometry("700x400")
+root.geometry("400x350")
 
-# Left frame for table
+# Song List Frame
 frame = tk.Frame(root)
 frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
+# Search Bar
 search_entry = Entry(frame)
 search_entry.pack(side=tk.TOP, fill=tk.X)
-search_entry.bind("<KeyRelease>", search_song)
+search_entry.bind("<KeyRelease>", lambda event: search_song())
 
+scrollbar = Scrollbar(frame)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+song_list = Listbox(frame, yscrollcommand=scrollbar.set, width=30)
+for i, song_name in enumerate(songdf['song']):
+    song_list.insert(i, song_name)
 
-columns = list(songdf.columns)
-tree = ttk.Treeview(frame, columns=columns, show="headings")
+song_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+song_list.bind("<Double-Button-1>", lambda event: play_song(song_list.curselection()[0]))
+scrollbar.config(command=song_list.yview)
 
-for col in columns:
-    tree.heading(col, text=col)
-    tree.column(col, width=100, anchor="w")
-
-tree.pack(fill=tk.BOTH, expand=True)
-tree.bind("<Double-1>", on_song_select)
-
-populate_table(songdf)
-
-# Right frame for controls
+# Controls
 controls_frame = tk.Frame(root)
 controls_frame.pack(side=tk.BOTTOM, pady=10)
 
@@ -128,10 +146,13 @@ play_button.pack(side=tk.LEFT, padx=5)
 next_button = tk.Button(controls_frame, text="⏭️", command=next_song)
 next_button.pack(side=tk.LEFT, padx=5)
 
-load_song_button = tk.Button(controls_frame, text="Load Song", command=loadSong)
-load_song_button.pack(side=tk.TOP, pady=20)
-
+# Song Label
 song_label = tk.Label(root, text="Select a song to play")
 song_label.pack(side=tk.TOP, pady=10)
+
+# Add Songs
+load_song_button = tk.Button(root, text="Load Song", command=loadSong)
+load_song_button.pack(side=tk.TOP, pady=10)
+
 
 root.mainloop()
