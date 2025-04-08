@@ -4,16 +4,17 @@
  
  """
 
-import os
-import tkinter as tk
-from tkinter import ttk, Entry, messagebox
-import pygame
-import pandas as pd
+#import libraries
+import os #navigate through local folders
+import tkinter as tk #GUI library
+import pygame # song/.mp3 playback and management
+import pandas as pd # for dictionary management
 
-# Initialize pygame mixer
+
+from tkinter import ttk, Entry, messagebox
 pygame.mixer.init()
 
-# Song data
+# Add basic starter song data
 mySongs = {
     'song': ['BackInBlack', 'BohemianRhapsody', 'Imagine', 'StairwayToHeaven', 'HeyJude',
              'SmellsLikeTeenSpirit', 'HotelCalifornia', 'LikeARollingStone', 'BillieJean', 'ShapeOfYou'],
@@ -27,11 +28,13 @@ mySongs = {
     'genre': ['Rock', 'Rock', 'Pop', 'Rock', 'Rock', 'Grunge', 'Rock', 'Rock', 'Pop', 'Pop']
 }
 
+#create dataframe from dictionary
 songdf = pd.DataFrame(mySongs)
 current_song_index = 0
 
-# --- Functions ---
-
+#==============================================================================
+# Functions 
+# load song file and start playback
 def play_song(index=None):
     global current_song_index
     if index is not None:
@@ -44,37 +47,43 @@ def play_song(index=None):
     pygame.mixer.music.play()
     song_label.config(text=f"Now Playing: {songdf['song'][current_song_index]}")
 
+# pause/play loaded song
 def toggle_play_pause():
     if pygame.mixer.music.get_busy():
         pygame.mixer.music.pause()
     else:
         pygame.mixer.music.unpause()
 
+#load new song, play it
 def next_song():
     global current_song_index
     current_song_index = (current_song_index + 1) % len(songdf)
     play_song()
 
+#play previous song in dataframe
 def prev_song():
     global current_song_index
     current_song_index = (current_song_index - 1) % len(songdf)
     play_song()
 
+#search for songs - checks if each song in the dataframe contains the string input somewhere in its name
 def search_song(*args):
     query = search_entry.get().lower()
     tree.delete(*tree.get_children())
     filtered_df = songdf[songdf['song'].str.lower().str.contains(query)] if query else songdf
     populate_table(filtered_df)
 
+#looks at where you click and plays a song of that index
 def on_song_select(event):
     selected = tree.focus()
     if selected:
         index = int(tree.item(selected)['text'])
         play_song(index)
 
+# Opens child window and populates it with songs found in your directory, and adds those songs to the DF
 def loadSong():
     global songdf
-    #on_song_select("<Button-2>")
+    #on_song_select("<Button-2>") # unused- could remove right click bug for edit_song
     songSelector = tk.Toplevel(root)
     songSelector.title("Load Song")
     songSelector.geometry("400x350")
@@ -105,10 +114,12 @@ def loadSong():
          new_songs_df = pd.DataFrame(new_songs)
          songdf = pd.concat([songdf, new_songs_df], ignore_index=True)
 
+#adds song data at input
 def populate_table(data):
     for i, row in data.iterrows():
         tree.insert('', 'end', text=str(i), values=list(row))
         
+#shows dialogue to help user navigate our program
 def helpbutton():
     messagebox.showinfo(title="Help",message="Adding songs:\n\
                         -Add mp3 files to folder\n\
@@ -120,7 +131,8 @@ def helpbutton():
                         Sorting:\n\
                         -Click on column title to sort")
 
-# --- GUI Setup ---
+#==============================================================================
+# GUI Setup 
 root = tk.Tk()
 root.title("Bumpr Music Player")
 root.geometry("1000x400")
@@ -129,22 +141,25 @@ root.geometry("1000x400")
 frame = tk.Frame(root)
 frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
+# Right frame for table
 rightside = tk.Frame(root)
 rightside.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
+# search box
 search_entry = Entry(frame)
 search_entry.pack(side=tk.TOP, fill=tk.X)
 search_entry.bind("<KeyRelease>", search_song)
 
 
-
+# headings for each column
 columns = list(songdf.columns)
 tree = ttk.Treeview(frame, columns=columns, show="headings")
 
 for col in columns:
     tree.heading(col, text=col)
     tree.column(col, width=100, anchor="w")
-    
+
+# sort alphabetically based on input DF column
 def sort_column(col, reverse):
     sorted_df = songdf.sort_values(by=col, ascending=reverse)
     populate_table(sorted_df)
@@ -158,7 +173,6 @@ for col in columns:
 tree.pack(fill=tk.BOTH, expand=True)
 tree.bind("<Double-1>", on_song_select)
 
-
 populate_table(songdf)
 
 def populate_table(data):
@@ -166,12 +180,10 @@ def populate_table(data):
     for i, row in data.iterrows():
         tree.insert('', 'end', text=str(i), values=list(row))
 
-
-# Right frame for controls
 controls_frame = tk.Frame(root)
 controls_frame.pack(side=tk.BOTTOM, fill=tk.BOTH)
 
-# Right-click context menu
+#right click to show 'Edit song' dialogue
 menu = tk.Menu(root, tearoff=0)
 menu.add_command(label="Edit Song Info", command=lambda: edit_song_info(tree.focus()))
 
@@ -181,9 +193,10 @@ def show_context_menu(event):
         tree.selection_set(selected)
         menu.post(event.x_root, event.y_root)
 
-tree.bind("<Button-2>", show_context_menu)  # Right-click for 
 
-tree.bind("<Button-3>", show_context_menu)  # Right-click for 
+tree.bind("<Button-2>", show_context_menu)
+
+tree.bind("<Button-3>", show_context_menu)
 
 def edit_song_info(item_id):
     if not item_id:
@@ -195,6 +208,7 @@ def edit_song_info(item_id):
     edit_window = tk.Toplevel(root)
     edit_window.title("Edit Song Info")
 
+    #if clicked, edit the content in dialogue based on user input
     entries = {}
     for i, col in enumerate(songdf.columns):
         tk.Label(edit_window, text=col).grid(row=i, column=0)
@@ -202,7 +216,8 @@ def edit_song_info(item_id):
         entry.insert(0, song_data[col])
         entry.grid(row=i, column=1)
         entries[col] = entry
-
+    
+    #save changes to dataframe
     def save_changes():
         for col in songdf.columns:
             songdf.at[index, col] = entries[col].get()
@@ -214,7 +229,7 @@ def edit_song_info(item_id):
     save_button.grid(row=len(songdf.columns), column=0, columnspan=2)
 
 
-#sort_columns
+#sort columns, paus/play, skip
 
 prev_button = tk.Button(controls_frame, text="⏮️", command=prev_song)
 prev_button.pack(side=tk.LEFT, padx=5,pady=15)
