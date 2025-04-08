@@ -87,10 +87,6 @@ def loadSong():
             if file.endswith('.mp3'):
                 full_path = os.path.join(root_dir, file)
                 music_files.append(full_path)
-
-    for song in music_files:
-        song_listbox.insert(tk.END, song)
-        
  # Add songs to the listbox
     new_songs = []
     for song in music_files:
@@ -111,15 +107,29 @@ def loadSong():
 def populate_table(data):
     for i, row in data.iterrows():
         tree.insert('', 'end', text=str(i), values=list(row))
+        
+def helpbutton():
+    messagebox.showinfo(title="Help",message="Adding songs:\n\
+                        -Add mp3 files to folder\n\
+                        -Click 'Add Files' and close pop-up window\n\
+                        -Search in menu to refresh library\n\
+                        -Click on song to play\n\n\
+                        Edit song information:\n\
+                        -Right Click on song to edit info\n\n\
+                        Sorting:\n\
+                        -Click on column title to sort")
 
 # --- GUI Setup ---
 root = tk.Tk()
 root.title("Bumpr Music Player")
-root.geometry("700x400")
+root.geometry("1000x400")
 
 # Left frame for table
 frame = tk.Frame(root)
 frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+rightside = tk.Frame(root)
+rightside.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
 search_entry = Entry(frame)
 search_entry.pack(side=tk.TOP, fill=tk.X)
@@ -133,29 +143,95 @@ tree = ttk.Treeview(frame, columns=columns, show="headings")
 for col in columns:
     tree.heading(col, text=col)
     tree.column(col, width=100, anchor="w")
+    
+def sort_column(col, reverse):
+    sorted_df = songdf.sort_values(by=col, ascending=reverse)
+    populate_table(sorted_df)
+    tree.heading(col, command=lambda: sort_column(col, not reverse))
+
+for col in columns:
+    tree.heading(col, text=col, command=lambda c=col: sort_column(c, False))
+
+    
 
 tree.pack(fill=tk.BOTH, expand=True)
 tree.bind("<Double-1>", on_song_select)
 
+
 populate_table(songdf)
+
+def populate_table(data):
+    tree.delete(*tree.get_children())
+    for i, row in data.iterrows():
+        tree.insert('', 'end', text=str(i), values=list(row))
+
 
 # Right frame for controls
 controls_frame = tk.Frame(root)
-controls_frame.pack(side=tk.BOTTOM, pady=10)
+controls_frame.pack(side=tk.BOTTOM, fill=tk.BOTH)
+
+# Right-click context menu
+menu = tk.Menu(root, tearoff=0)
+menu.add_command(label="Edit Song Info", command=lambda: edit_song_info(tree.focus()))
+
+def show_context_menu(event):
+    selected = tree.identify_row(event.y)
+    if selected:
+        tree.selection_set(selected)
+        menu.post(event.x_root, event.y_root)
+
+tree.bind("<Button-2>", show_context_menu)  # Right-click for 
+
+tree.bind("<Button-3>", show_context_menu)  # Right-click for 
+
+def edit_song_info(item_id):
+    if not item_id:
+        return
+    
+    index = int(tree.item(item_id)['text'])
+    song_data = songdf.loc[index]
+
+    edit_window = tk.Toplevel(root)
+    edit_window.title("Edit Song Info")
+
+    entries = {}
+    for i, col in enumerate(songdf.columns):
+        tk.Label(edit_window, text=col).grid(row=i, column=0)
+        entry = tk.Entry(edit_window)
+        entry.insert(0, song_data[col])
+        entry.grid(row=i, column=1)
+        entries[col] = entry
+
+    def save_changes():
+        for col in songdf.columns:
+            songdf.at[index, col] = entries[col].get()
+        tree.delete(*tree.get_children())
+        populate_table(songdf)
+        edit_window.destroy()
+
+    save_button = tk.Button(edit_window, text="Save", command=save_changes)
+    save_button.grid(row=len(songdf.columns), column=0, columnspan=2)
+
+
+#sort_columns
 
 prev_button = tk.Button(controls_frame, text="⏮️", command=prev_song)
-prev_button.pack(side=tk.LEFT, padx=5)
+prev_button.pack(side=tk.LEFT, padx=5,pady=15)
 
 play_button = tk.Button(controls_frame, text="▶️/⏸️", command=toggle_play_pause)
-play_button.pack(side=tk.LEFT, padx=5)
+play_button.pack(side=tk.LEFT, padx=6,pady=15)
 
 next_button = tk.Button(controls_frame, text="⏭️", command=next_song)
-next_button.pack(side=tk.LEFT, padx=5)
+next_button.pack(side=tk.LEFT, padx=7,pady=15)
 
-load_song_button = tk.Button(controls_frame, text="Load Song", command=loadSong)
-load_song_button.pack(side=tk.TOP, pady=20)
+load_song_button = tk.Button(controls_frame, text="Add Files", command=loadSong)
+load_song_button.pack(side=tk.LEFT, padx=8,pady=15)
 
 song_label = tk.Label(root, text="Select a song to play")
-song_label.pack(side=tk.TOP, pady=10)
+song_label.pack(side=tk.TOP, anchor="n")
+
+help_button = tk.Button(rightside, text="?", command=helpbutton)
+help_button.pack(side=tk.TOP, anchor='ne')
+
 
 root.mainloop()
