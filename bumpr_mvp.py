@@ -74,6 +74,7 @@ def on_song_select(event):
 
 def loadSong():
     global songdf
+    #on_song_select("<Button-2>")
     songSelector = tk.Toplevel(root)
     songSelector.title("Load Song")
     songSelector.geometry("400x350")
