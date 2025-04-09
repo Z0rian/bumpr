@@ -9,9 +9,8 @@ import os #navigate through local folders
 import tkinter as tk #GUI library
 import pygame # song/.mp3 playback and management
 import pandas as pd # for dictionary management
-
-
 from tkinter import ttk, Entry, messagebox
+
 pygame.mixer.init()
 
 # Add basic starter song data
@@ -34,6 +33,7 @@ current_song_index = 0
 
 #==============================================================================
 # Functions 
+
 # load song file and start playback
 def play_song(index=None):
     global current_song_index
@@ -73,7 +73,7 @@ def search_song(*args):
     filtered_df = songdf[songdf['song'].str.lower().str.contains(query)] if query else songdf
     populate_table(filtered_df)
 
-#looks at where you click and plays a song of that index
+#looks at where you click and plays the song of that index
 def on_song_select(event):
     selected = tree.focus()
     if selected:
@@ -113,6 +113,10 @@ def loadSong():
     if new_songs:
          new_songs_df = pd.DataFrame(new_songs)
          songdf = pd.concat([songdf, new_songs_df], ignore_index=True)
+    
+    tree.delete(*tree.get_children())
+    populate_table(songdf)
+
 
 #adds song data at input
 def populate_table(data):
@@ -124,9 +128,9 @@ def helpbutton():
     messagebox.showinfo(title="Help",message="Adding songs:\n\
                         -Add mp3 files to folder\n\
                         -Click 'Add Files' and close pop-up window\n\
-                        -Search in menu to refresh library\n\
                         -Click on song to play\n\n\
                         Edit song information:\n\
+                        -Left click once on a song to select it\n\
                         -Right Click on song to edit info\n\n\
                         Sorting:\n\
                         -Click on column title to sort")
@@ -168,8 +172,6 @@ def sort_column(col, reverse):
 for col in columns:
     tree.heading(col, text=col, command=lambda c=col: sort_column(c, False))
 
-    
-
 tree.pack(fill=tk.BOTH, expand=True)
 tree.bind("<Double-1>", on_song_select)
 
@@ -179,9 +181,6 @@ def populate_table(data):
     tree.delete(*tree.get_children())
     for i, row in data.iterrows():
         tree.insert('', 'end', text=str(i), values=list(row))
-
-controls_frame = tk.Frame(root)
-controls_frame.pack(side=tk.BOTTOM, fill=tk.BOTH)
 
 #right click to show 'Edit song' dialogue
 menu = tk.Menu(root, tearoff=0)
@@ -228,8 +227,11 @@ def edit_song_info(item_id):
     save_button = tk.Button(edit_window, text="Save", command=save_changes)
     save_button.grid(row=len(songdf.columns), column=0, columnspan=2)
 
+# create box for control buttons
+controls_frame = tk.Frame(root)
+controls_frame.pack(side=tk.BOTTOM, fill=tk.BOTH)
 
-#sort columns, paus/play, skip
+#sort columns, pause/play, skip
 
 prev_button = tk.Button(controls_frame, text="⏮️", command=prev_song)
 prev_button.pack(side=tk.LEFT, padx=5,pady=15)
